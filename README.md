@@ -37,7 +37,7 @@ Only functions whose name starts with `mcp2lambda-` will be available to the mod
 
 ## Sample Lambda Functions
 
-This repository includes three sample Lambda functions that demonstrate different use cases. These functions have basic permissions and can only write to CloudWatch logs.
+This repository includes three *sample* Lambda functions that demonstrate different use cases. These functions have basic permissions and can only write to CloudWatch logs.
 
 ### CustomerIdFromEmail
 Retrieves a customer ID based on an email address. This function takes an email parameter and returns the associated customer ID, demonstrating how to build simple lookup tools. The function is hard coded to reply to the `user@example.com` email address. For example, you can ask the model to get the customer ID for the email `user@example.com`.
