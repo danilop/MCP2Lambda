@@ -1,0 +1,99 @@
+# MCP2Lambda
+
+A bridge between [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol) clients and [AWS Lambda](https://aws.amazon.com/lambda/) functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources in your AWS account without the need to provide external network access to those resources.
+
+## Overview
+
+MCP2Lambda enables LLMs (Large Language Models) to interact with AWS Lambda functions as tools, extending their capabilities beyond text generation. This allows models to:
+
+- Access real-time and private data, including data sources in your VPCs
+- Execute custom code using a Lambda function as sandbox environment
+- Interact with external services and APIs using Lambda functions internet access (and bandwidth)
+- Perform specialized calculations or data processing
+
+The server uses the MCP protocol, which standardizes the way AI models can access external tools.
+
+Only functions whose name starts with `mcp2lambda-` will be available to the model.
+
+## Prerequisites
+
+- Python 3.12 or higher
+- AWS account with configured credentials
+- AWS Lambda functions (sample functions provided in the repo)
+- An MCP-compatible client like [Claude Desktop](https://docs.anthropic.com/en/docs/claude-desktop)
+
+## Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/mcp2lambda.git
+   cd mcp2lambda
+   ```
+
+2. Configure AWS credentials. For example, using the [AWS CLI](https://aws.amazon.com/cli):
+   ```
+   aws configure
+   ```
+
+## Sample Lambda Functions
+
+This repository includes three sample Lambda functions that demonstrate different use cases. These functions have basic permissions and can only write to CloudWatch logs.
+
+### CustomerIdFromEmail
+Retrieves a customer ID based on an email address. This function takes an email parameter and returns the associated customer ID, demonstrating how to build simple lookup tools. The function is hard coded to reply to the `user@example.com` email address. For example, you can ask the model to get the customer ID for the email `user@example.com`.
+
+### CustomerInfoFromId
+Retrieves detailed customer information based on a customer ID. This function returns customer details like name, email, and status, showing how Lambda can provide context-specific data. The function is hard coded to reply to the customer ID returned by the previous function. For example, you can ask the model to get the customer status for the email `user@example.com`. This will use both functions to get to the result.
+
+### RunPythonCode
+Executes arbitrary Python code within a Lambda sandbox environment. This powerful function allows Claude to write and run Python code to perform calculations, data processing, or other operations not built into the model. For example, you can ask the model to "Calculate the number of prime numbers between 1 and 10, 1 and 100, and so on up to 1M".
+
+## Deploying Sample Lambda Functions
+
+The repository includes sample Lambda functions in the `SampleFunctions` directory.
+
+1. Install the AWS SAM CLI: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html
+
+2. Deploy the sample functions:
+   ```
+   cd SampleFunctions
+   sam build
+   sam deploy
+   ```
+
+The sample functions will be deployed with the prefix `mcp2lambda-`.
+
+## Using with Claude Desktop
+
+Add the following to your Claude Desktop configuration file:
+
+```json
+{
+  "mcpServers": {
+    "mcp2lambda": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<full path to the mcp2lambda directory>",
+        "run",
+        "src/main.py"
+      ]
+    }
+  }
+}
+```
+
+To help the model use tools via AWS Lambda, in your settings profile, you can add to your personal preferences a sentence like:
+
+```
+Use the AWS Lambda tools to improve your answers.
+```
+
+## Starting the MCP Server
+
+Start the MCP server locally:
+
+```sh
+cd mcp2lambda
+uv run src/main.py
+```

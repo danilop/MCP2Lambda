@@ -1,0 +1,10 @@
+[project]
+name = "mcp2lambda"
+version = "0.1.0"
+description = "MCP2Lambda - A bridge between MCP clients and AWS Lambda functions"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.37.0",
+    "mcp>=1.3.0",
+]
