@@ -43,7 +43,7 @@ This repository includes three *sample* Lambda functions that demonstrate differ
 Retrieves a customer ID based on an email address. This function takes an email parameter and returns the associated customer ID, demonstrating how to build simple lookup tools. The function is hard coded to reply to the `user@example.com` email address. For example, you can ask the model to get the customer ID for the email `user@example.com`.
 
 ### CustomerInfoFromId
-Retrieves detailed customer information based on a customer ID. This function returns customer details like name, email, and status, showing how Lambda can provide context-specific data. The function is hard coded to reply to the customer ID returned by the previous function. For example, you can ask the model to get the customer status for the email `user@example.com`. This will use both functions to get to the result.
+Retrieves detailed customer information based on a customer ID. This function returns customer details like name, email, and status, showing how Lambda can provide context-specific data. The function is hard coded to reply to the customer ID returned by the previous function. For example, you can ask the model to "Get the customer status for email `user@example.com`". This will use both functions to get to the result.
 
 ### RunPythonCode
 Executes arbitrary Python code within a Lambda sandbox environment. This powerful function allows Claude to write and run Python code to perform calculations, data processing, or other operations not built into the model. For example, you can ask the model to "Calculate the number of prime numbers between 1 and 10, 1 and 100, and so on up to 1M".
