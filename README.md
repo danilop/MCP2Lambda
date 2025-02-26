@@ -1,6 +1,6 @@
 # MCP2Lambda
 
-Use any [AWS Lambda](https://aws.amazon.com/lambda/) serverless function as a tool for an LLM (Large Language Model) without code changes using [Anthropic](https://www.anthropic.com)'s [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol).
+Run any [AWS Lambda](https://aws.amazon.com/lambda/) function as a **Large Language Model (LLM) tool** without code changes using [Anthropic](https://www.anthropic.com)'s [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol).
 
 ```mermaid
 graph LR
