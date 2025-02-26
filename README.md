@@ -6,14 +6,16 @@ Run any AWS Lambda function as a [Model Control Protocol (MCP)](https://github.c
 graph LR
     A[Model] <--> B[MCP Client]
     B <--> C[MCP Server]
-    C <--> D[Lambda Function]
+    C <--> D[Lambda Function(s)]
     D <--> E[Other AWS Services]
+    D <--> F[Internet]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#333,stroke-width:2px
     style C fill:#bfb,stroke:#333,stroke-width:2px
     style D fill:#fbb,stroke:#333,stroke-width:2px
     style E fill:#fbf,stroke:#333,stroke-width:2px
+    style F fill:#dff,stroke:#333,stroke-width:2px
 ```
 
 It acts as a bridge between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access.
