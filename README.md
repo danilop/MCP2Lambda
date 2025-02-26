@@ -30,7 +30,7 @@ The MCP server gives access to two tools:
 
 2. The second tool allows to **invoke** those Lambda functions by name passing the required parameters.
 
-No code changes are required. To get better results, you can change these configurations:
+No code changes are required but you should change these configurations to improve results:
 
 1. To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
 
