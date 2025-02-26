@@ -1,6 +1,29 @@
 # MCP2Lambda
 
-A bridge between [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol) clients and [AWS Lambda](https://aws.amazon.com/lambda/) functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources in your AWS account without the need to provide external network access to those resources.
+Run any AWS Lambda function as a [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol) server without code changes.
+
+```mermaid
+graph LR
+    A[Model] <--> B[MCP Client]
+    B <--> C[MCP Server]
+    C <--> D[Lambda Function]
+    D <--> E[Other AWS Services]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D fill:#fbb,stroke:#333,stroke-width:2px
+    style E fill:#fbf,stroke:#333,stroke-width:2px
+```
+
+It acts as a bridge between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access.
+
+The MCP server gives access to two tools:
+
+1. The first tool can autodiscover all Lambda functions in your account that match a prefix or a list of names. This tool shares the names of the functions and their descriptions with the model.
+2. The second tool allows to call those Lambda functions by name passing the required parameters.
+
+To provide the MCP client with the knowledge to use the Lambda function, the description of the Lambda function should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
 
 ## Overview
 
@@ -13,7 +36,7 @@ MCP2Lambda enables LLMs (Large Language Models) to interact with AWS Lambda func
 
 The server uses the MCP protocol, which standardizes the way AI models can access external tools.
 
-Only functions whose name starts with `mcp2lambda-` will be available to the model.
+By default, only functions whose name starts with `mcp2lambda-` will be available to the model.
 
 ## Prerequisites
 
@@ -110,7 +133,7 @@ You can also customize the system prompt in the same file to change how the mode
 1. Start the MCP2Lambda server in one terminal:
    ```
    cd mcp2lambda
-   uv run src/main.py
+   uv run main.py
    ```
 
 2. Run the Bedrock client in another terminal:
@@ -134,7 +157,7 @@ Add the following to your Claude Desktop configuration file:
         "--directory",
         "<full path to the mcp2lambda directory>",
         "run",
-        "src/main.py"
+        "main.py"
       ]
     }
   }
@@ -153,5 +176,5 @@ Start the MCP server locally:
 
 ```sh
 cd mcp2lambda
-uv run src/main.py
+uv run main.py
 ```
