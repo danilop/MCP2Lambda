@@ -50,18 +50,76 @@ Executes arbitrary Python code within a Lambda sandbox environment. This powerfu
 
 ## Deploying Sample Lambda Functions
 
-The repository includes sample Lambda functions in the `SampleFunctions` directory.
+The repository includes sample Lambda functions in the `sample_functions` directory.
 
 1. Install the AWS SAM CLI: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html
 
 2. Deploy the sample functions:
    ```
-   cd SampleFunctions
+   cd sample_functions
    sam build
    sam deploy
    ```
 
 The sample functions will be deployed with the prefix `mcp2lambda-`.
+
+## Using with Amazon Bedrock
+
+MCP2Lambda can also be used with Amazon Bedrock's Converse API, allowing you to use the MCP protocol with any of the models supported by Bedrock.
+
+The `mcp_client_bedrock` directory contains a client implementation that connects MCP2Lambda to Amazon Bedrock models.
+
+See https://github.com/mikegc-aws/amazon-bedrock-mcp for more information.
+
+### Prerequisites
+
+- Amazon Bedrock access and permissions to use models like Claude, Mistral, Llama, etc.
+- Boto3 configured with appropriate credentials
+
+### Installation and Setup
+
+1. Navigate to the mcp_client_bedrock directory:
+   ```
+   cd mcp_client_bedrock
+   ```
+
+2. Install dependencies:
+   ```
+   uv pip install -e .
+   ```
+
+3. Run the client:
+   ```
+   python main.py
+   ```
+
+### Configuration
+
+The client is configured to use Anthropic's Claude 3.7 Sonnet by default, but you can modify the `model_id` in `main.py` to use other Bedrock models:
+
+```python
+# Examples of supported models:
+model_id = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+#model_id = "us.amazon.nova-pro-v1:0"
+```
+
+You can also customize the system prompt in the same file to change how the model behaves.
+
+### Usage
+
+1. Start the MCP2Lambda server in one terminal:
+   ```
+   cd mcp2lambda
+   uv run src/main.py
+   ```
+
+2. Run the Bedrock client in another terminal:
+   ```
+   cd mcp_client_bedrock
+   python main.py
+   ```
+
+3. Interact with the model through the command-line interface. The model will have access to the Lambda functions deployed earlier.
 
 ## Using with Claude Desktop
 

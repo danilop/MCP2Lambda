@@ -26,7 +26,12 @@ def list_lambda_functions(ctx: Context) -> str:
         f for f in functions["Functions"] if f["FunctionName"].startswith(FUNCTION_PREFIX)
     ]
     ctx.info(f"Found {len(functions_with_prefix)} functions with prefix {FUNCTION_PREFIX}")
-    return functions_with_prefix
+    
+    function_names_and_descriptions = [ 
+        {field: f[field] for field in ["FunctionName", "Description"] if field in f}
+        for f in functions_with_prefix
+    ]
+    return json.dumps(function_names_and_descriptions)
 
 
 @mcp.tool()

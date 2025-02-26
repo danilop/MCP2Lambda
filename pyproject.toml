@@ -8,3 +8,6 @@ dependencies = [
     "boto3>=1.37.0",
     "mcp>=1.3.0",
 ]
+
+[tool.uv.workspace]
+members = ["mcp_bedrock"]

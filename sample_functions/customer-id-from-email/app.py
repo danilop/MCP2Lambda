@@ -1,5 +1,3 @@
-import json
-
 def lambda_handler(event: dict, context: dict) -> dict:
     """
     AWS Lambda function to retrieve customer ID based on customer email address.
