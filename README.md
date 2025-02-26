@@ -6,7 +6,7 @@ Run any AWS Lambda function as a [Model Control Protocol (MCP)](https://github.c
 graph LR
     A[Model] <--> B[MCP Client]
     B <--> C[MCP Server]
-    C <--> D[Lambda Function(s)]
+    C <--> D[Lambda Function]
     D <--> E[Other AWS Services]
     D <--> F[Internet]
     
