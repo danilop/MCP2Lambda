@@ -9,6 +9,7 @@ graph LR
     C <--> D[Lambda Function]
     D <--> E[Other AWS Services]
     D <--> F[Internet]
+    D <--> G[VPC]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#333,stroke-width:2px
@@ -16,9 +17,10 @@ graph LR
     style D fill:#fbb,stroke:#333,stroke-width:2px
     style E fill:#fbf,stroke:#333,stroke-width:2px
     style F fill:#dff,stroke:#333,stroke-width:2px
+    style G fill:#ffd,stroke:#333,stroke-width:2px
 ```
 
-This MCP server acts as a bridge between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access.
+This MCP server acts as a bridge between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access. This approach allows the model to use other AWS services, private networks, and the public internet.
 
 The MCP server gives access to two tools:
 
