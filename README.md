@@ -27,11 +27,14 @@ From a **security** perspective, this approach implements segregation of duties 
 The MCP server gives access to two tools:
 
 1. The first tool can **autodiscover** all Lambda functions in your account that match a prefix or an allowed list of names. This tool shares the names of the functions and their descriptions with the model.
+
 2. The second tool allows to **invoke** those Lambda functions by name passing the required parameters.
 
-To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
+No code changes are required. To get better results, you can change these configurations:
 
-To help the model use the tools available via AWS Lambda, you can add something like this to your system prompt:
+1. To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
+
+2. To help the model use the tools available via AWS Lambda, you can add something like this to your **system prompt**:
 
 ```
 Use the AWS Lambda tools to improve your answers.
