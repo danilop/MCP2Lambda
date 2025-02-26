@@ -20,18 +20,20 @@ graph LR
     style G fill:#ffd,stroke:#333,stroke-width:2px
 ```
 
-This MCP server acts as a bridge between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access. This approach allows the model to use other AWS services, private networks, and the public internet.
+This MCP server acts as a **bridge** between MCP clients and AWS Lambda functions, allowing generative AI models to access and run Lambda functions as tools. This is useful, for example, to access private resources such as internal applications and databases without the need to provide public network access. This approach allows the model to use other AWS services, private networks, and the public internet.
+
+From a **security** perspective, this approach implements segregation of duties by allowing the model to invoke the Lambda functions but not to access the other AWS services directly. The client only needs AWS credentials to invoke the Lambda functions. The Lambda functions can then interact with other AWS services (using the function role) and access public or private networks.
 
 The MCP server gives access to two tools:
 
-1. The first tool can autodiscover all Lambda functions in your account that match a prefix or an allowed list of names. This tool shares the names of the functions and their descriptions with the model.
-2. The second tool allows to call those Lambda functions by name passing the required parameters.
+1. The first tool can **autodiscover** all Lambda functions in your account that match a prefix or an allowed list of names. This tool shares the names of the functions and their descriptions with the model.
+2. The second tool allows to **invoke** those Lambda functions by name passing the required parameters.
 
-To provide the MCP client with the knowledge to use the Lambda function, the description of the Lambda function should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
+To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
 
 ## Overview
 
-MCP2Lambda enables LLMs (Large Language Models) to interact with AWS Lambda functions as tools, extending their capabilities beyond text generation. This allows models to:
+MCP2Lambda enables LLMs to interact with AWS Lambda functions as tools, extending their capabilities beyond text generation. This allows models to:
 
 - Access real-time and private data, including data sources in your VPCs
 - Execute custom code using a Lambda function as sandbox environment
@@ -47,6 +49,7 @@ By default, only functions whose name starts with `mcp2lambda-` will be availabl
 - Python 3.12 or higher
 - AWS account with configured credentials
 - AWS Lambda functions (sample functions provided in the repo)
+- An application using [Amazon Bedrock](https://aws.amazon.com/bedrock/) with the [Converse API](https://docs.aws.amazon.com/bedrock/latest/userguide/converse.html)
 - An MCP-compatible client like [Claude Desktop](https://docs.anthropic.com/en/docs/claude-desktop)
 
 ## Installation
