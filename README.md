@@ -5,7 +5,7 @@ Run any [AWS Lambda](https://aws.amazon.com/lambda/) function as a Large Languag
 ```mermaid
 graph LR
     A[Model] <--> B[MCP Client]
-    B <--> C[["MCP2Lambda<br>(MCP Server)"]]
+    B <--> C["MCP2Lambda<br>(MCP Server)"]
     C <--> D[Lambda Function]
     D <--> E[Other AWS Services]
     D <--> F[Internet]
@@ -13,7 +13,7 @@ graph LR
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#bfb,stroke:#333,stroke-width:4px,stroke-dasharray: 5 5
+    style C fill:#bfb,stroke:#333,stroke-width:4px
     style D fill:#fbb,stroke:#333,stroke-width:2px
     style E fill:#fbf,stroke:#333,stroke-width:2px
     style F fill:#dff,stroke:#333,stroke-width:2px
