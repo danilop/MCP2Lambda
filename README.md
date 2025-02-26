@@ -31,6 +31,12 @@ The MCP server gives access to two tools:
 
 To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
 
+To help the model use the tools available via AWS Lambda, you can add something like this to your system prompt:
+
+```
+Use the AWS Lambda tools to improve your answers.
+```
+
 ## Overview
 
 MCP2Lambda enables LLMs to interact with AWS Lambda functions as tools, extending their capabilities beyond text generation. This allows models to:
