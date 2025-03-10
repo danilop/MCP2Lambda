@@ -8,7 +8,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./customer-info-from-id
-      Description: Customer status from "customerId"
+      Description: Customer status from { 'customerId' }
       MemorySize: 128
       Timeout: 3
       Handler: app.lambda_handler
@@ -20,7 +20,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./customer-id-from-email
-      Description: Get customer ID from "email"
+      Description: Get customer ID from { 'email' }
       MemorySize: 128
       Timeout: 3
       Handler: app.lambda_handler
@@ -32,7 +32,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./run-python-code
-      Description: Run Python code in the 'input_script'. Install modules if 'install_modules' is not an empty list.
+      Description: Run Python code in the { 'input_script' }. Install modules if { 'install_modules' } is not an empty list.
       MemorySize: 1024
       Timeout: 60
       Handler: app.lambda_handler

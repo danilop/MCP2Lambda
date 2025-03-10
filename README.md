@@ -32,6 +32,29 @@ The MCP server gives access to two tools:
 
 No code changes are required. You should change these configurations to improve results:
 
+## Strategy Selection
+
+The gateway supports two different strategies for handling Lambda functions:
+
+1. **Pre-Discovery Mode** (default: enabled): Registers each Lambda function as an individual tool at startup. This provides a more intuitive interface where each function appears as its own named tool.
+
+2. **Generic Mode**: Uses two generic tools (`list_lambda_functions` and `invoke_lambda_function`) to interact with Lambda functions.
+
+You can control this behavior through:
+
+- Environment variable: `PRE_DISCOVERY=true|false`
+- CLI flag: `--pre-discovery`
+
+Example:
+```bash
+# Disable pre-discovery mode
+export PRE_DISCOVERY=false
+python main.py
+
+# Or using CLI flag
+python main.py --pre-discovery
+```
+
 1. To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.
 
 2. To help the model use the tools available via AWS Lambda, you can add something like this to your **system prompt**:
