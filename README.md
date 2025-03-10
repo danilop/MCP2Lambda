@@ -45,7 +45,7 @@ The gateway supports two different strategies for handling Lambda functions:
 You can control this behavior through:
 
 - Environment variable: `PRE_DISCOVERY=true|false`
-- CLI flag: `--pre-discovery`
+- CLI flag: `--no-pre-discovery` (disables pre-discovery mode)
 
 Example:
 ```bash
@@ -53,8 +53,8 @@ Example:
 export PRE_DISCOVERY=false
 python main.py
 
-# Or using CLI flag
-python main.py --pre-discovery
+# Or using CLI flag to disable pre-discovery
+python main.py --no-pre-discovery
 ```
 
 1. To provide the MCP client with the knowledge to use a Lambda function, the **description of the Lambda function** should indicate what the function does and which parameters it uses. See the sample functions for a quick demo and more details.

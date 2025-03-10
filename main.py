@@ -9,13 +9,19 @@ import boto3
 # Strategy selection - set to True to register Lambda functions as individual tools
 # set to False to use the original approach with list and invoke tools
 parser = argparse.ArgumentParser(description='MCP Gateway to AWS Lambda')
-parser.add_argument('--pre-discovery', 
+parser.add_argument('--no-pre-discovery', 
                    action='store_true',
-                   default=os.environ.get('PRE_DISCOVERY', 'true').lower() == 'true',
-                   help='Register Lambda functions as individual tools at startup')
+                   help='Disable registering Lambda functions as individual tools at startup')
 
+# Parse arguments and set default configuration
 args = parser.parse_args()
-PRE_DISCOVERY = args.pre_discovery
+
+# Check environment variable first (takes precedence if set)
+if 'PRE_DISCOVERY' in os.environ:
+    PRE_DISCOVERY = os.environ.get('PRE_DISCOVERY').lower() == 'true'
+else:
+    # Otherwise use CLI argument (default is enabled, --no-pre-discovery disables)
+    PRE_DISCOVERY = not args.no_pre_discovery
 
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 FUNCTION_PREFIX = os.environ.get("FUNCTION_PREFIX", "mcp2lambda-")
@@ -58,62 +64,67 @@ def format_lambda_response(function_name: str, payload: bytes) -> str:
         return f"Function {function_name} returned payload: {payload}"
 
 
+# Define the generic tool functions that can be used directly or as fallbacks
+def list_lambda_functions_impl(ctx: Context) -> str:
+    """Tool that lists all AWS Lambda functions that you can call as tools.
+    Use this list to understand what these functions are and what they do.
+    This functions can help you in many different ways."""
+
+    ctx.info("Calling AWS Lambda ListFunctions...")
+
+    functions = lambda_client.list_functions()
+
+    ctx.info(f"Found {len(functions['Functions'])} functions")
+
+    functions_with_prefix = [
+        f for f in functions["Functions"] if validate_function_name(f["FunctionName"])
+    ]
+
+    ctx.info(f"Found {len(functions_with_prefix)} functions with prefix {FUNCTION_PREFIX}")
+    
+    # Pass only function names and descriptions to the model
+    function_names_and_descriptions = [ 
+        {field: f[field] for field in ["FunctionName", "Description"] if field in f}
+        for f in functions_with_prefix
+    ]
+    
+    return json.dumps(function_names_and_descriptions)
+
+
+def invoke_lambda_function_impl(function_name: str, parameters: dict, ctx: Context) -> str:
+    """Tool that invokes an AWS Lambda function with a JSON payload.
+    Before using this tool, list the functions available to you."""
+    
+    if not validate_function_name(function_name):
+        return f"Function {function_name} is not valid"
+
+    ctx.info(f"Invoking {function_name} with parameters: {parameters}")
+
+    response = lambda_client.invoke(
+        FunctionName=function_name,
+        InvocationType="RequestResponse",
+        Payload=json.dumps(parameters),
+    )
+
+    ctx.info(f"Function {function_name} returned with status code: {response['StatusCode']}")
+
+    if "FunctionError" in response:
+        error_message = f"Function {function_name} returned with error: {response['FunctionError']}"
+        ctx.error(error_message)
+        return error_message
+
+    payload = response["Payload"].read()
+    
+    # Format the response payload
+    return format_lambda_response(function_name, payload)
+
+
 # Register the original tools if not using dynamic tools
 if not PRE_DISCOVERY:
-    @mcp.tool()
-    def list_lambda_functions(ctx: Context) -> str:
-        """Tool that lists all AWS Lambda functions that you can call as tools.
-        Use this list to understand what these functions are and what they do.
-        This functions can help you in many different ways."""
-
-        ctx.info("Calling AWS Lambda ListFunctions...")
-
-        functions = lambda_client.list_functions()
-
-        ctx.info(f"Found {len(functions['Functions'])} functions")
-
-        functions_with_prefix = [
-            f for f in functions["Functions"] if validate_function_name(f["FunctionName"])
-        ]
-
-        ctx.info(f"Found {len(functions_with_prefix)} functions with prefix {FUNCTION_PREFIX}")
-        
-        # Pass only function names and descriptions to the model
-        function_names_and_descriptions = [ 
-            {field: f[field] for field in ["FunctionName", "Description"] if field in f}
-            for f in functions_with_prefix
-        ]
-        
-        return json.dumps(function_names_and_descriptions)
-
-
-    @mcp.tool()
-    def invoke_lambda_function(function_name: str, parameters: dict, ctx: Context) -> str:
-        """Tool that invokes an AWS Lambda function with a JSON payload.
-        Before using this tool, list the functions available to you."""
-        
-        if not validate_function_name(function_name):
-            return f"Function {function_name} is not valid"
-
-        ctx.info(f"Invoking {function_name} with parameters: {parameters}")
-
-        response = lambda_client.invoke(
-            FunctionName=function_name,
-            InvocationType="RequestResponse",
-            Payload=json.dumps(parameters),
-        )
-
-        ctx.info(f"Function {function_name} returned with status code: {response['StatusCode']}")
-
-        if "FunctionError" in response:
-            error_message = f"Function {function_name} returned with error: {response['FunctionError']}"
-            ctx.error(error_message)
-            return error_message
-
-        payload = response["Payload"].read()
-        
-        # Format the response payload
-        return format_lambda_response(function_name, payload)
+    # Register the generic tool functions with MCP
+    mcp.tool()(list_lambda_functions_impl)
+    mcp.tool()(invoke_lambda_function_impl)
+    print("Using generic Lambda tools strategy...")
 
 
 def create_lambda_tool(function_name: str, description: str):
@@ -124,24 +135,8 @@ def create_lambda_tool(function_name: str, description: str):
     # Define the inner function
     def lambda_function(parameters: dict, ctx: Context) -> str:
         """Tool for invoking a specific AWS Lambda function with parameters."""
-        ctx.info(f"Invoking {function_name} with parameters: {parameters}")
-        
-        response = lambda_client.invoke(
-            FunctionName=function_name,
-            InvocationType="RequestResponse",
-            Payload=json.dumps(parameters),
-        )
-        
-        ctx.info(f"Function {function_name} returned with status code: {response['StatusCode']}")
-        
-        if "FunctionError" in response:
-            error_message = f"Function {function_name} returned with error: {response['FunctionError']}"
-            ctx.error(error_message)
-            return error_message
-        
-        payload = response["Payload"].read()
-        
-        return format_lambda_response(function_name, payload)
+        # Use the same implementation as the generic invoke function
+        return invoke_lambda_function_impl(function_name, parameters, ctx)
     
     # Set the function's documentation
     lambda_function.__doc__ = description
@@ -181,64 +176,10 @@ if PRE_DISCOVERY:
     except Exception as e:
         print(f"Error registering Lambda functions as tools: {e}")
         print("Falling back to generic Lambda tools...")
-        # If dynamic registration fails, fall back to the original strategy
         
-        @mcp.tool()
-        def list_lambda_functions(ctx: Context) -> str:
-            """Tool that lists all AWS Lambda functions that you can call as tools.
-            Use this list to understand what these functions are and what they do.
-            This functions can help you in many different ways."""
-
-            ctx.info("Calling AWS Lambda ListFunctions...")
-
-            functions = lambda_client.list_functions()
-
-            ctx.info(f"Found {len(functions['Functions'])} functions")
-
-            functions_with_prefix = [
-                f for f in functions["Functions"] if validate_function_name(f["FunctionName"])
-            ]
-
-            ctx.info(f"Found {len(functions_with_prefix)} functions with prefix {FUNCTION_PREFIX}")
-            
-            # Pass only function names and descriptions to the model
-            function_names_and_descriptions = [ 
-                {field: f[field] for field in ["FunctionName", "Description"] if field in f}
-                for f in functions_with_prefix
-            ]
-            
-            return json.dumps(function_names_and_descriptions)
-
-
-        @mcp.tool()
-        def invoke_lambda_function(function_name: str, parameters: dict, ctx: Context) -> str:
-            """Tool that invokes an AWS Lambda function with a JSON payload.
-            Before using this tool, list the functions available to you."""
-            
-            if not validate_function_name(function_name):
-                return f"Function {function_name} is not valid"
-
-            ctx.info(f"Invoking {function_name} with parameters: {parameters}")
-
-            response = lambda_client.invoke(
-                FunctionName=function_name,
-                InvocationType="RequestResponse",
-                Payload=json.dumps(parameters),
-            )
-
-            ctx.info(f"Function {function_name} returned with status code: {response['StatusCode']}")
-
-            if "FunctionError" in response:
-                error_message = f"Function {function_name} returned with error: {response['FunctionError']}"
-                ctx.error(error_message)
-                return error_message
-
-            payload = response["Payload"].read()
-            
-            # Format the response payload
-            return format_lambda_response(function_name, payload)
-else:
-    print("Using generic Lambda tools strategy...")
+        # Register the generic tool functions with MCP as fallback
+        mcp.tool()(list_lambda_functions_impl)
+        mcp.tool()(invoke_lambda_function_impl)
 
 
 if __name__ == "__main__":
