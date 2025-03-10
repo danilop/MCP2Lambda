@@ -1,5 +1,7 @@
 # MCP2Lambda
 
+[![smithery badge](https://smithery.ai/badge/@danilop/MCP2Lambda)](https://smithery.ai/server/@danilop/MCP2Lambda)
+
 Run any [AWS Lambda](https://aws.amazon.com/lambda/) function as a Large Language Model (LLM) **tool** without code changes using [Anthropic](https://www.anthropic.com)'s [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol).
 
 ```mermaid
@@ -86,6 +88,15 @@ By default, only functions whose name starts with `mcp2lambda-` will be availabl
 
 ## Installation
 
+### Installing via Smithery
+
+To install MCP2Lambda for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@danilop/MCP2Lambda):
+
+```bash
+npx -y @smithery/cli install @danilop/MCP2Lambda --client claude
+```
+
+### Manual Installation
 1. Clone the repository:
    ```
    git clone https://github.com/yourusername/mcp2lambda.git
