@@ -2,6 +2,10 @@
 
 [![smithery badge](https://smithery.ai/badge/@danilop/MCP2Lambda)](https://smithery.ai/server/@danilop/MCP2Lambda)
 
+<a href="https://glama.ai/mcp/servers/4hokv207sz">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/4hokv207sz/badge" alt="MCP2Lambda MCP server" />
+</a>
+
 Run any [AWS Lambda](https://aws.amazon.com/lambda/) function as a Large Language Model (LLM) **tool** without code changes using [Anthropic](https://www.anthropic.com)'s [Model Control Protocol (MCP)](https://github.com/modelcontextprotocol).
 
 ```mermaid
