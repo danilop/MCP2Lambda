@@ -24,6 +24,7 @@ questions and perform tasks."""
     # Create server parameters for SQLite configuration
     server_params = StdioServerParameters(
         command="uv",
+#       args=["--directory", "..", "run", "main.py", "--no-pre-discovery"],
         args=["--directory", "..", "run", "main.py"],
         env=None
     )
