@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/danilop-mcp2lambda-badge.png)](https://mseep.ai/app/danilop-mcp2lambda)
+
 # MCP2Lambda
 
 [![smithery badge](https://smithery.ai/badge/@danilop/MCP2Lambda)](https://smithery.ai/server/@danilop/MCP2Lambda)
