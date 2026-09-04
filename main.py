@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import re
@@ -114,7 +115,18 @@ def invoke_lambda_function_impl(function_name: str, parameters: dict, ctx: Conte
         return error_message
 
     payload = response["Payload"].read()
-    
+
+    # Optional: issue an AOTrust provenance receipt (Ed25519 PDR) for this invocation.
+    # Enabled via environment variable: MCP2LAMBDA_AOTRUST=1
+    if os.environ.get("MCP2LAMBDA_AOTRUST"):
+        try:
+            from agent_notary import AOTrustTool
+            work_hash = hashlib.sha256(payload).hexdigest()
+            receipt = AOTrustTool.run(work_hash=work_hash)
+            ctx.info(f"AOTrust receipt issued: {receipt}")
+        except Exception as e:  # never break the tool call on receipt failure
+            ctx.info(f"AOTrust receipt skipped: {e}")
+
     # Format the response payload
     return format_lambda_response(function_name, payload)
 
