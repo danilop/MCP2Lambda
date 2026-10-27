@@ -1,7 +1,5 @@
 # MCP2Lambda
 
-[![smithery badge](https://smithery.ai/badge/@danilop/MCP2Lambda)](https://smithery.ai/server/@danilop/MCP2Lambda)
-
 <a href="https://glama.ai/mcp/servers/4hokv207sz">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/4hokv207sz/badge" alt="MCP2Lambda MCP server" />
 </a>
@@ -92,19 +90,10 @@ By default, only functions whose name starts with `mcp2lambda-` will be availabl
 
 ## Installation
 
-### Installing via Smithery
-
-To install MCP2Lambda for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@danilop/MCP2Lambda):
-
-```bash
-npx -y @smithery/cli install @danilop/MCP2Lambda --client claude
-```
-
-### Manual Installation
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/mcp2lambda.git
-   cd mcp2lambda
+   git clone https://github.com/danilop/MCP2Lambda.git
+   cd MCP2Lambda
    ```
 
 2. Configure AWS credentials. For example, using the [AWS CLI](https://aws.amazon.com/cli):
@@ -186,7 +175,7 @@ You can also customize the system prompt in the same file to change how the mode
 
 1. Start the MCP2Lambda server in one terminal:
    ```
-   cd mcp2lambda
+   cd MCP2Lambda
    uv run main.py
    ```
 
@@ -229,6 +218,6 @@ Use the AWS Lambda tools to improve your answers.
 Start the MCP server locally:
 
 ```sh
-cd mcp2lambda
+cd MCP2Lambda
 uv run main.py
 ```
